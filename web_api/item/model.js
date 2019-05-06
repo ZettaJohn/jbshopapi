@@ -54,17 +54,17 @@ const model = {
         nameFN = "edit_item_tran"
         nameTB = "item_tran"
         inData.forEach((val, i) => {
-            sql_update = "UPDATE item_transaction SET \
+            sql_update += "UPDATE item_transaction SET \
             status_cancel='"+ val.status_cancel + "', \
             item_qty='"+ val.item_qty + "', \
             price='"+ val.price + "', \
             discount='"+ val.discount + "' \
             last_update='"+ val.last_update + "' \
             WHERE item_id LIKE '"+ val.item_id + "' "
-            var res_update = await sqlQuery.sql_insert(connMyDB, nameTB, nameFN, sql_update)
-            if ((i + 1) == inData.length) {
-                callback(res_update)
-            }
+            // var res_update = await sqlQuery.sql_insert(connMyDB, nameTB, nameFN, sql_update)
+            // if ((i + 1) == inData.length) {
+            //     callback(res_update)
+            // }
         });
     },
     async search_item(inData, callback) {

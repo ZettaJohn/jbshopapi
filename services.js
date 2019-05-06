@@ -11,16 +11,16 @@ const sql_functions = {
             const pool = mysql.createPool(dbConfig)
             pool.getConnection((err, connection) => {
                 if (err) throw err
-                console.log("sqlQuery", sqlQuery)
+                // console.log("sqlQuery", sqlQuery)
                 connection.query(sqlQuery, (err, result) => {
                     connection.release()
                     pool.end()
                     if (err) throw err
                     if (result.length > 0) {
-                        save_log(sqlQuery, nameFN, nameTB, result.recordset)
-                        resolve(public_functions.response(200, "Success", result.recordset))
+                        save_log(sqlQuery, nameFN, nameTB, result)
+                        resolve(public_functions.response(200, "Success", result))
                     } else {
-                        save_log(sqlQuery, nameFN, nameTB, result.recordset)
+                        save_log(sqlQuery, nameFN, nameTB, result)
                         resolve(public_functions.response(502, "Error Data", result))
                     }
                 })
@@ -34,7 +34,7 @@ const sql_functions = {
                 if (err) throw err
                 connection.beginTransaction((err) => {
                     if (err) throw err
-                    console.log("sqlQuery", sqlQuery);
+                    // console.log("sqlQuery", sqlQuery);
                     connection.query(sqlQuery, (err, result) => {
                         if (err) {
                             return connection.rollback(() => {
@@ -47,8 +47,8 @@ const sql_functions = {
                                     throw err
                                 })
                             }
-                            save_log(sqlQuery, nameFN, nameTB, result.recordset)
-                            resolve(public_functions.response(200, "Success", result.recordset))
+                            save_log(sqlQuery, nameFN, nameTB, result)
+                            resolve(public_functions.response(200, "Success", result))
                         })
                     })
                 })
@@ -63,7 +63,7 @@ const save_log = (res_data, type, tbl_name, input_data) => {
     //-----3. tbl_name = ชื่อของตารางที่เกี่ยวข้อง
     //-----4. input_data = ข้อมูลที่นำเข้ามา
     fs.readFile("log-server.txt", function (err, data) {
-        console.log("err", err, data);
+        // console.log("err", err, data);
         if (err) return false
     })
     // Check_Log_file("log-server.txt")
