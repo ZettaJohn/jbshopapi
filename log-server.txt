@@ -52,3 +52,4 @@
 2019.05.06, 14:44:34.0437 UTC -> 2019-05-06 21:44:34 :: find_by_doc doc_master :: {"doc_last":"JB190506-00007"}
 2019.05.06, 14:44:34.0448 UTC -> 2019-05-06 21:44:34 :: find_by_doc doc_master :: {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":3,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
 2019.05.06, 14:44:34.0454 UTC -> 2019-05-06 21:44:34 :: create_new_item item_master :: {"fieldCount":0,"affectedRows":1,"insertId":8,"serverStatus":3,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2019.05.14, 10:34:47.0271 UTC -> 2019-05-14 17:34:47 :: find_user jb_user :: {"errno":"ECONNREFUSED","code":"ECONNREFUSED","syscall":"connect","address":"127.0.0.1","port":3306,"fatal":true}

@@ -10,18 +10,21 @@ const sql_functions = {
         return new Promise((resolve, reject) => {
             const pool = mysql.createPool(dbConfig)
             pool.getConnection((err, connection) => {
-                if (err) throw err
+                if (err) {
+                    save_log(sqlQuery, nameFN, nameTB, err)
+                    return reject(public_functions.response(500, "Error Data", err))
+                }
                 // console.log("sqlQuery", sqlQuery)
                 connection.query(sqlQuery, (err, result) => {
                     connection.release()
                     pool.end()
-                    if (err) throw err
+                    if (err) return reject(public_functions.response(500, "Error Data", err))
                     if (result.length > 0) {
                         save_log(sqlQuery, nameFN, nameTB, result)
-                        resolve(public_functions.response(200, "Success", result))
+                        return resolve(public_functions.response(200, "Success", result))
                     } else {
                         save_log(sqlQuery, nameFN, nameTB, result)
-                        resolve(public_functions.response(502, "Error Data", result))
+                        return resolve(public_functions.response(204, "Error Data", result))
                     }
                 })
             })
@@ -48,7 +51,35 @@ const sql_functions = {
                                 })
                             }
                             save_log(sqlQuery, nameFN, nameTB, result)
-                            resolve(public_functions.response(200, "Success", result))
+                            resolve(public_functions.response(201, "Success", result))
+                        })
+                    })
+                })
+            })
+        })
+    },
+    sql_updateORdelete(dbConfig, nameTB = "", nameFN = "", sqlQuery = "") {
+        return new Promise((resolve, reject) => {
+            const pool = mysql.createPool(dbConfig)
+            pool.getConnection((err, connection) => {
+                if (err) throw err
+                connection.beginTransaction((err) => {
+                    if (err) throw err
+                    // console.log("sqlQuery", sqlQuery);
+                    connection.query(sqlQuery, (err, result) => {
+                        if (err) {
+                            return connection.rollback(() => {
+                                throw err
+                            })
+                        }
+                        connection.commit((err) => {
+                            if (err) {
+                                return connection.rollback(() => {
+                                    throw err
+                                })
+                            }
+                            save_log(sqlQuery, nameFN, nameTB, result)
+                            resolve(public_functions.response(201, "Success", result))
                         })
                     })
                 })
