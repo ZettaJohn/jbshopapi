@@ -4,6 +4,8 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr('TMSZfeotrtDapSloufst');
 var fs = require("fs");
 const mysql = require('mysql')
+const crypto = require("crypto")
+const strKey = crypto.createHash('md5').update("27iydButojt14").digest('hex');
 
 const sql_functions = {
     sql_select(dbConfig, nameTB = "", nameFN = "", sqlQuery = "") {
@@ -14,11 +16,11 @@ const sql_functions = {
                     save_log(sqlQuery, nameFN, nameTB, err)
                     return reject(public_functions.response(500, "Error Data", err))
                 }
-                // console.log("sqlQuery", sqlQuery)
+                console.log("sqlQuery", sqlQuery)
                 connection.query(sqlQuery, (err, result) => {
                     connection.release()
                     pool.end()
-                    if (err) return reject(public_functions.response(500, "Error Data", err))
+                    if (err) {return reject(public_functions.response(500, "Error Data", err))}
                     if (result.length > 0) {
                         save_log(sqlQuery, nameFN, nameTB, result)
                         return resolve(public_functions.response(200, "Success", result))
@@ -34,24 +36,24 @@ const sql_functions = {
         return new Promise((resolve, reject) => {
             const pool = mysql.createPool(dbConfig)
             pool.getConnection((err, connection) => {
-                if (err) throw err
+                if (err) return reject(err)
                 connection.beginTransaction((err) => {
-                    if (err) throw err
-                    // console.log("sqlQuery", sqlQuery);
+                    if (err) return reject(err)
+                    console.log("sqlQuery", sqlQuery);
                     connection.query(sqlQuery, (err, result) => {
                         if (err) {
                             return connection.rollback(() => {
-                                throw err
+                                return reject(err)
                             })
                         }
                         connection.commit((err) => {
                             if (err) {
                                 return connection.rollback(() => {
-                                    throw err
+                                    return reject(err)
                                 })
                             }
                             save_log(sqlQuery, nameFN, nameTB, result)
-                            resolve(public_functions.response(201, "Success", result))
+                            return resolve(public_functions.response(201, "Success", result))
                         })
                     })
                 })
@@ -159,17 +161,15 @@ const public_functions = {
         }
         return document
     },
-    set_encryption(str_data) {
-        return new Promise((resolve) => {
-            var encrypt_str = cryptr.encrypt(str_data)
-            resolve(encrypt_str)
-        })
+    encryption(strData = "") {
+        var mykey = crypto.createCipher('aes-128-cbc', strKey);
+        var mystr = mykey.update(strData, 'utf8', 'hex') + mykey.final('hex');
+        return mystr
     },
-    get_decryption(str_data) {
-        return new Promise((resolve) => {
-            var decrypt_str = cryptr.decrypt(str_data)
-            resolve(decrypt_str)
-        })
+    decryption(strData = "") {
+        var mykey = crypto.createDecipher('aes-128-cbc', strKey);
+        var mystr = mykey.update(strData, 'hex', 'utf8')+ mykey.final('utf8');
+        return mystr
     },
     response(status, dev_msg, data) {
         switch (status) {

@@ -10,8 +10,6 @@ const PORT = config.port
 var jsonParser = bodyParser.json({ limit: 1024 * 1024 * 2000, type: 'application/json' });
 var urlencodedParser = bodyParser.urlencoded({ extended: true, limit: 1024 * 1024 * 20, type: 'application/x-www-form-urlencoding' })
 
-
-
 function fnCallback(text, time, callback) {
     setTimeout(() => callback("function " + text), time)
 }

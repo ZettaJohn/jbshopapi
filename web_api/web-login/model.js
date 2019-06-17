@@ -1,8 +1,24 @@
-const { connMyDB } = require("../../config")
+const { connMyDB, connDB } = require("../../config")
 const { sqlQuery, fnPublic } = require("../../services")
 var sql_select, sql_insert, sql_update, nameTB, nameFN, sql_values
 
 const model = {
+    find_user(username, pass) {
+        return new Promise((resolve, reject) => {
+            nameFN = "find_user"
+            nameTB = "jbshop_user"
+            sql_select = `SELECT * FROM jbshop_user WHERE user_id LIKE '${username}' AND user_pass LIKE '${pass}' `
+            sqlQuery.sql_select(connDB, nameTB, nameFN, sql_select)
+        .then((response)=>{
+            console.log("resJohn",response)
+            resolve(response)
+        })
+        .catch((err)=>{
+            console.log("errJohn",err)
+            reject(err)
+        })
+        })
+    },
     async create_new_item(newBarcode, inData, callback) {
         nameFN = "create_new_item"
         nameTB = "item_master"
@@ -121,12 +137,12 @@ const model = {
         var res_select = await sqlQuery.sql_select(connMyDB, nameTB, nameFN, sql_select)
         callback(res_select)
     },
-    async find_SO_by_item(stDate,enDate,inItem, callback) {
+    async find_SO_by_item(stDate, enDate, inItem, callback) {
         nameFN = "find_SO_by_item"
         nameTB = "item_transaction"
         sql_select = "SELECT * \
         FROM item_transaction \
-        WHERE CONVERT(create_date,char(10)) BETWEEN '" + stDate + "' AND '" + enDate + "' AND item_id LIKE '"+ inItem + "' "
+        WHERE CONVERT(create_date,char(10)) BETWEEN '" + stDate + "' AND '" + enDate + "' AND item_id LIKE '" + inItem + "' "
         var res_select = await sqlQuery.sql_select(connMyDB, nameTB, nameFN, sql_select)
         callback(res_select)
     },
@@ -158,12 +174,12 @@ const model = {
         var res_select = await sqlQuery.sql_select(connMyDB, nameTB, nameFN, sql_select)
         callback(res_select)
     },
-    async find_PO_by_item(stDate,enDate,inItem, callback) {
+    async find_PO_by_item(stDate, enDate, inItem, callback) {
         nameFN = "find_PO_by_item"
         nameTB = "item_purchase"
         sql_select = "SELECT * \
         FROM item_purchase \
-        WHERE CONVERT(create_date,char(10)) BETWEEN '" + stDate + "' AND '" + enDate + "' AND item_id LIKE '"+ inItem + "' "
+        WHERE CONVERT(create_date,char(10)) BETWEEN '" + stDate + "' AND '" + enDate + "' AND item_id LIKE '" + inItem + "' "
         var res_select = await sqlQuery.sql_select(connMyDB, nameTB, nameFN, sql_select)
         callback(res_select)
     }

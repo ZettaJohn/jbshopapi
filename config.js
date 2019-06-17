@@ -6,6 +6,7 @@ const connect_db={
     password:process.env.PASS_CONN,
     database:process.env.DATABASE_NAME,
     queueLimit : 0,
+    acquireTimeout: 300,
     connectionLimit : 99999999, 
     multipleStatements: true,
 }
@@ -15,6 +16,7 @@ const conFocusrewards={
     password:"bS#x7u79",
     database:"focusrewards",
     queueLimit : 0,
+    acquireTimeout: 300,
     connectionLimit : 99999999, 
     multipleStatements: true,
 }
@@ -25,6 +27,7 @@ const connect_myDB={
     // password:"jbShop2728JBShop",
     database:"jbshop",
     // port:"3306",
+    acquireTimeout: 300,
     queueLimit : 0,
     connectionLimit : 99999999, 
     multipleStatements: true,
